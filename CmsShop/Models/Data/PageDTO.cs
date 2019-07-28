@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CmsShop.Models.Data
 {
-    [Table("tblPaes")]
+    [Table("tblPages")]
     public class PageDTO
     {
         [Key]
