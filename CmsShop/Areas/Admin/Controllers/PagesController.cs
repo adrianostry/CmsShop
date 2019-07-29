@@ -11,18 +11,24 @@ namespace CmsShop.Areas.Admin.Controllers
         // GET: Admin/Pages
         public ActionResult Index()
         {
-            /// zadeklarowanie listy (PageVM)
+            // zadeklarowanie listy (PageVM)
             List<PageVM> pagesList;
 
             using (Db db = new Db())
             {
-                /// zainicjalizowanie listy
+                // zainicjalizowanie listy
                 pagesList = db.Pages.ToArray().OrderBy(x => x.Sorting).Select(x => new PageVM(x)).ToList();
             }
 
-            /// zwracanie strony do widoku
+            // zwracanie strony do widoku
 
             return View(pagesList);
+        }
+
+        // GET: Admin/Pages/AddPage
+        public ActionResult AddPage()
+        {
+            return View();
         }
     }
 }
