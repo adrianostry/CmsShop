@@ -112,6 +112,7 @@ namespace CmsShop.Areas.Admin.Controllers
         }
 
         // POST: Admin/Pages/EditPage
+        [HttpPost]
         public ActionResult EditPage(PageVM model)
         {
             if (!ModelState.IsValid)
@@ -167,6 +168,7 @@ namespace CmsShop.Areas.Admin.Controllers
         }
 
         // GET: Admin/Pages/Details/id
+        [HttpGet]
         public ActionResult Details(int id)
         {
             // deklaracja PageVM
@@ -192,6 +194,7 @@ namespace CmsShop.Areas.Admin.Controllers
         }
 
         // GET: Admin/Pages/Deleted/id
+        [HttpGet]
         public ActionResult Delete(int id)
         {
             using (Db db = new Db())
@@ -208,6 +211,31 @@ namespace CmsShop.Areas.Admin.Controllers
 
             // Dodać komunikat Redirect - przekierowanie
             return RedirectToAction("Index");
+        }
+
+        // POST: Admin/Pages/ReoderPages
+        [HttpPost]
+        public ActionResult ReorderPages(int[] id)
+        {
+            using (Db db = new Db())
+            {
+                int count = 1;
+                PageDTO dto;
+
+                // sortowanie stron, zapis w bazie danych
+                foreach (var pageId in id)
+                {
+                    dto = db.Pages.Find(pageId);
+                    dto.Sorting = count;
+
+                    db.SaveChanges();
+                    count++;
+                }
+            }
+
+
+
+                return View();
         }
     }
 }

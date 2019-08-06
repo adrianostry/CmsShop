@@ -16,8 +16,8 @@
 }
 else
 {
-    <table class="table">
-        <tr>
+    <table class="table sorting" id="pages">
+        <tr class="home">
             <th>
                 Tytuł Strony
             </th>
@@ -32,7 +32,7 @@ else
 
         @foreach (var item in Model)
         {
-            <tr>
+            <tr id="id_@item.Id" class="@item.Slug">
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
@@ -59,8 +59,14 @@ else
 
 @section scripts{
 
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
     <script>
 
+
+        /*
+         * scrypt potwierdzający usunięcie strony "Potwierdzasz usunięcie strony"
+        */
         $(function () {
 
             $("a.delete").click(function () {
@@ -68,6 +74,32 @@ else
             });
 
         });
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        /*
+        * scrypt do sortowania stron Drag and Drop"
+        */
+        $(function () {
+
+            $("table#pages tboody").sortable({
+                items: "tr:not(.home)",
+                placeholder: "ui-state-highlight",
+                update: function () {
+                    var ids = $("table#pages tboody").sortable("serialize");
+                    var url = "/Admin/Pages/ReorderPaes";
+
+                    $.post(url, ids, function (data) {
+
+                    })
+                }
+            })
+
+        });
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
     </script>
 
