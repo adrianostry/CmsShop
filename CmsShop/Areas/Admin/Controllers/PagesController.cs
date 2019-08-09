@@ -237,5 +237,24 @@ namespace CmsShop.Areas.Admin.Controllers
 
                 return View();
         }
+
+        // GET: Admin/Pages/EditSidebar
+        public ActionResult EditSidebar ()
+        {
+            // Deklaracja Sidebar 
+            SidebarVM model;
+
+            using (Db db = new Db())
+            {
+                // Pobieramy SidebarDTO
+                SidebarDTO dto = db.Sidebar.Find(1);
+
+                // Inicjalizacja modelu 
+                model = new SidebarVM(dto);
+            }
+
+
+            return View(model);
+        }
     }
 }
