@@ -239,6 +239,7 @@ namespace CmsShop.Areas.Admin.Controllers
         }
 
         // GET: Admin/Pages/EditSidebar
+        [HttpGet]
         public ActionResult EditSidebar ()
         {
             // Deklaracja Sidebar 
@@ -256,5 +257,30 @@ namespace CmsShop.Areas.Admin.Controllers
 
             return View(model);
         }
+
+        // POST: Admin/Pages/EditSidebar
+        [HttpPost]
+        public ActionResult EditSidebar (SidebarVM model)
+        {
+            using (Db db = new Db())
+            {
+                // pobieranie Sidebar DTO
+                SidebarDTO dto = db.Sidebar.Find(1);
+
+                // modyfikujemy Sidebar
+                dto.Body = model.Body;
+
+                // zapis na bazie
+                db.SaveChanges();
+
+            }
+
+            // ustawienie komunikatu o modyfikacji Sidebar
+            TempData["SM"] = "Zmodyfikowales Pasek Boczny";
+
+            // Redirect
+            return RedirectToAction("EditSidebar");
+        }
+
     }
 }
