@@ -1,10 +1,10 @@
 ﻿@model CmsShop.Models.ViewModels.Pages.PageVM
 
 @{
-    ViewBag.Title = "Edycja strony";
+    ViewBag.Title = "Edycja Strony";
 }
 
-<h2>Edycja strony</h2>
+<h2>Edycja Strony</h2>
 
 @if (TempData["SM"] != null)
 {
@@ -74,3 +74,14 @@
 <div>
     @Html.ActionLink("Powrót", "Index")
 </div>
+
+@section scripts {
+
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("Body");
+    </script>
+
+}
+
+///// poprawić błąd null - admin/controllers/pagecontroller 

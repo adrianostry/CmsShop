@@ -1,4 +1,5 @@
 ﻿using CmsShop.Models.Data;
+using System.Web.Mvc;
 
 namespace CmsShop.Models.ViewModels.Pages
 {
@@ -15,6 +16,8 @@ namespace CmsShop.Models.ViewModels.Pages
         }
 
         public int Id { get; set; }
+
+        [AllowHtml]
         public string Body { get; set; }
 
     }
