@@ -128,5 +128,21 @@ namespace CmsShop.Areas.Admin.Controllers
 
                 return "OK";
         }
+
+        // GET: Admin/Shop/Categories
+        [HttpGet]
+        public ActionResult AddProduct()
+        {
+            // Inicjalizacja model
+            ProductVM model = new ProductVM();
+
+            // Pobieranie listy kategorii
+            using (Db db = new Db())
+            {
+                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+            }
+
+                return View(model);
+        }
     }
 }
