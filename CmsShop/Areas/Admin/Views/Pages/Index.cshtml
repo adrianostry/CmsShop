@@ -83,11 +83,11 @@ else
         */
         $(function () {
 
-            $("table#pages tboody").sortable({
+            $("table#pages tbody").sortable({
                 items: "tr:not(.home)",
                 placeholder: "ui-state-highlight",
                 update: function () {
-                    var ids = $("table#pages tboody").sortable("serialize");
+                    var ids = $("table#pages tbody").sortable("serialize");
                     var url = "/Admin/Pages/ReorderPaes";
 
                     $.post(url, ids, function (data) {
