@@ -150,40 +150,39 @@ namespace CmsShop.Areas.Admin.Controllers
 
         // POST: Admin/Shop/AddProduct
         [HttpPost]
-        public ActionResult ActionName(ProductVM model, HttpPostedFileBase file)
+        public ActionResult AddProduct(ProductVM model, HttpPostedFileBase file)
         {
-            // Sprawdzamy model state
+            // sprawdzamy model state
             if (!ModelState.IsValid)
             {
                 using (Db db = new Db())
-                { 
-                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
-                return View(model);
+                {
+                    model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+                    return View(model);
                 }
             }
 
-            // Sprawdzanie czy dana nazwa produktu jest aktualna
+            // sprawdzenie czy nazwa produktu jest unikalna
             using (Db db = new Db())
             {
                 if (db.Products.Any(x => x.Name == model.Name))
                 {
                     model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
-                    ModelState.AddModelError("", "Ta nazwa jest zajęta!");
+                    ModelState.AddModelError("", "Ta nazwa produktu jest zajęta!");
                     return View(model);
-
                 }
             }
 
-            // Deklaracja product id
+            // deklaracja product id
             int id;
 
-            // Dodawanie produktu i zapis na bazie 
+            // dodawanie produktu i zapis na bazie
             using (Db db = new Db())
             {
                 ProductDTO product = new ProductDTO();
                 product.Name = model.Name;
                 product.Slug = model.Name.Replace(" ", "-").ToLower();
-                product.Desription = model.Desription;
+                product.Description = model.Description;
                 product.Price = model.Price;
                 product.CategoryId = model.CategoryId;
 
@@ -193,13 +192,12 @@ namespace CmsShop.Areas.Admin.Controllers
                 db.Products.Add(product);
                 db.SaveChanges();
 
-                // Pobieranie id danego produktu
+                // pobranie id dodanego produktu
                 id = product.Id;
             }
 
-
-            // Ustawienie komunikatu (produkt dodany)
-            TempData["SM"] = "Dodałeś Produkt";
+            // ustawiamy komunikat 
+            TempData["SM"] = "Dodałeś produkt";
 
             #region Upload Image
 
@@ -223,9 +221,10 @@ namespace CmsShop.Areas.Admin.Controllers
             if (!Directory.Exists(pathString5))
                 Directory.CreateDirectory(pathString5);
 
+
             if (file != null && file.ContentLength > 0)
             {
-                // Sprawdzanie rozszezenia pliku czy to jest napewno obrazek
+                // sprawdzenie rozszezenia pliku czy mamy do czynienia z obrazkiem
                 string ext = file.ContentType.ToLower();
                 if (ext != "image/jpg" &&
                     ext != "image/jpeg" &&
@@ -245,7 +244,7 @@ namespace CmsShop.Areas.Admin.Controllers
                 // inicjalizacja nazwy obrazka
                 string imageName = file.FileName;
 
-                // Zapis obrazka (nazwy) do Bazy
+                // zapis nazwy obrazka do bazy
                 using (Db db = new Db())
                 {
                     ProductDTO dto = db.Products.Find(id);
@@ -256,14 +255,15 @@ namespace CmsShop.Areas.Admin.Controllers
                 var path = string.Format("{0}\\{1}", pathString2, imageName);
                 var path2 = string.Format("{0}\\{1}", pathString3, imageName);
 
-                // Zapisanie oryginalnego obrazka
+                // zapisujemy orginalny obrazek
                 file.SaveAs(path);
 
-                // Zapisanie miniatury
+                // zapisujemy miniaturke
                 WebImage img = new WebImage(file.InputStream);
                 img.Resize(200, 200);
                 img.Save(path2);
             }
+
 
             #endregion
 
