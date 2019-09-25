@@ -460,7 +460,7 @@ namespace CmsShop.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult DeleteProduct(int id)
         {
-            // usuwanie produktu z bazy
+            // usuniecie produktu z bazy
             using (Db db = new Db())
             {
                 ProductDTO dto = db.Products.Find(id);
@@ -468,15 +468,14 @@ namespace CmsShop.Areas.Admin.Controllers
                 db.SaveChanges();
             }
 
-            // usuwanie folderu produktu ze wszystkimi plikami dodanymi z produktem
-            var originalDirector = new DirectoryInfo(string.Format("{0}Images\\Uploads", Server.MapPath(@"\")));
-            var pathString = Path.Combine(originalDirector.ToString(), "Products\\" + id.ToString());
+            // usuniecie folderu produktu z wszystkimi plikami
+            var orginalDirector = new DirectoryInfo(string.Format("{0}Images\\Uploads", Server.MapPath(@"\")));
+            var pathString = Path.Combine(orginalDirector.ToString(), "Products\\" + id.ToString());
 
             if (Directory.Exists(pathString))
                 Directory.Delete(pathString, true);
 
-
-                return RedirectToAction("Products");
+            return RedirectToAction("Products");
         }
     }
 }
