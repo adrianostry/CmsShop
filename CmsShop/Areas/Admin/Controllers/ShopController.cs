@@ -26,7 +26,7 @@ namespace CmsShop.Areas.Admin.Controllers
                                    .Select(x => new CategoryVM(x)).ToList();
             }
 
-                return View(categoryVMList);
+            return View(categoryVMList);
         }
 
         // POST: Admin/Shop/AddNewCategory
@@ -61,7 +61,7 @@ namespace CmsShop.Areas.Admin.Controllers
 
         // POST: Admin/Shop/ReorderCategories
         [HttpPost]
-        public ActionResult ReorderCategories (int[] id)
+        public ActionResult ReorderCategories(int[] id)
         {
             using (Db db = new Db())
             {
@@ -84,7 +84,7 @@ namespace CmsShop.Areas.Admin.Controllers
                 }
             }
 
-                return View();
+            return View();
         }
 
         // GET: Admin/Shop/DeleteCategory
@@ -104,7 +104,7 @@ namespace CmsShop.Areas.Admin.Controllers
 
             }
 
-                return RedirectToAction("Categories");
+            return RedirectToAction("Categories");
         }
 
         // POST: Admin/Shop/RenameCateory
@@ -130,7 +130,7 @@ namespace CmsShop.Areas.Admin.Controllers
 
             }
 
-                return "OK";
+            return "OK";
         }
 
         // GET: Admin/Shop/Categories
@@ -146,7 +146,7 @@ namespace CmsShop.Areas.Admin.Controllers
                 model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
             }
 
-                return View(model);
+            return View(model);
         }
 
         // POST: Admin/Shop/AddProduct
@@ -294,7 +294,7 @@ namespace CmsShop.Areas.Admin.Controllers
 
                 // ustawienie wybranych katerorii
                 ViewBag.SelectedCat = catId.ToString();
-                
+
             }
 
             // ustawianie stronicowania
@@ -305,7 +305,7 @@ namespace CmsShop.Areas.Admin.Controllers
             return View(listOfProductVM);
         }
 
-        // GET: Admin/Shop/EditProduct
+        // GET: Admin/Shop/EditProduct/id
         [HttpGet]
         public ActionResult EditProduct(int id)
         {
@@ -334,7 +334,71 @@ namespace CmsShop.Areas.Admin.Controllers
                     .Select(fn => Path.GetFileName(fn));
             }
 
+            return View(model);
+        }
+
+        // POST: Admin/Shop/EditProduct
+        [HttpPost]
+        public ActionResult EditProduct(ProductVM model, HttpPostedFileBase file)
+        {
+            // pobieranie id produktu
+            int id = model.Id;
+
+            // pobieranie kategorii dla rozwijalnej listy
+            using (Db db = new Db())
+            {
+                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+            }
+
+            model.GalleryImages = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Gallery/Thumbs"))
+                    .Select(fn => Path.GetFileName(fn));
+
+            // sprawdzanie modelu state
+            if (!ModelState.IsValid)
+            {
+
                 return View(model);
+            }
+
+            // sprawdzanie unikalnosci nazwy produktu
+            using (Db db = new Db())
+            {
+                if (db.Products.Where(x => x.Id != id).Any(x => x.Name == model.Name))
+                {
+                    ModelState.AddModelError("", "Ta nazwa produktu jest zajęta");
+                    return View(model);
+                }
+            }
+
+            // Edycja produktu oraz zapis na bazie
+            using (Db db = new Db())
+            {
+                ProductDTO dto = db.Products.Find(id);
+                dto.Name = model.Name;
+                dto.Slug = model.Name.Replace(" ", "-").ToLower();
+                dto.Description = model.Description;
+                dto.Price = model.Price;
+                dto.CategoryId = model.CategoryId;
+                dto.ImageName = model.ImageName;
+
+                CategoryDTO catDto = db.Categories.FirstOrDefault(x => x.Id == model.CategoryId);
+                dto.CategoryName = catDto.Name;
+
+                db.SaveChanges();
+            }
+
+            // ustawienie TempData
+            TempData["SM"] = "Edytowałeś Produkt";
+
+            #region Image Upload
+
+
+
+
+            #endregion
+
+
+            return RedirectToAction("EditProduct");
         }
     }
 }
