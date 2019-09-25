@@ -85,7 +85,17 @@
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
 
+        /*
+        * scrypt potwierdzający usunięcie produktu "Potwierdzasz usunięcie produktu"
+       */
+        $(function () {
 
+            $("a.delete").click(function () {
+                if (!confirm("Potwierdzasz usunięcie produktu")) return false;
+            });
+
+        });
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
     </script>
 
