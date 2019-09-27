@@ -92,7 +92,7 @@
     <h3>Brak galerii zdjęć dla tego produktu</h3>
 }
 
-<from actions="/admin/shop/SaveGalleryImages" method="post" enctype="multipart/from-data" class="dropzone" id="dropzoneFrom">
+<from actions="/admin/shop/SaveGalleryImages?id=@Model.Id" method="post" enctype="multipart/from-data" class="dropzone" id="dropzoneFrom">
     <div class="fallback">
         <input type="file" name="file" multiple />
         <input type="submit" value="Upload" />
