@@ -49,5 +49,23 @@ namespace CmsShop.Controllers
             // zwracamy widok z pageVM
             return View(model);
         }
+
+        public ActionResult PagesMenuPartial()
+        {
+            // deklaracja PageVM
+            List<PageVM> pageVMList;
+
+            // pobieranie stron
+            using (Db db = new Db())
+            {
+                pageVMList = db.Pages.ToArray()
+                               .OrderBy(x => x.Sorting)
+                               .Where(x => x.Slug != "home")
+                               .Select(x => new PageVM(x)).ToList();
+            }
+
+            // zwracamy pageVMList
+            return PartialView(pageVMList);
+        }
     }
 }
