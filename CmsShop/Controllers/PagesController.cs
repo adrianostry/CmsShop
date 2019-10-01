@@ -67,5 +67,21 @@ namespace CmsShop.Controllers
             // zwracamy pageVMList
             return PartialView(pageVMList);
         }
+
+        public ActionResult SidebarPartial()
+        {
+            // deklarujemy model 
+            SidebarVM model;
+
+            // Inicjujemy model
+            using (Db db = new Db())
+            {
+                SidebarDTO dto = db.Sidebar.Find(1);
+                model = new SidebarVM(dto);
+            }
+
+            // zwracamy Partial z modelem
+            return PartialView(model);
+        }
     }
 }
