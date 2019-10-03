@@ -2,6 +2,7 @@
 using CmsShop.Models.ViewModels.Shop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -36,7 +37,7 @@ namespace CmsShop.Controllers
             return PartialView(categoryVMList);
         }
 
-
+        // GET: /shop/category/name
         public ActionResult Category(string name)
         {
             // deklaracja ProduktVMList
@@ -65,6 +66,43 @@ namespace CmsShop.Controllers
 
 
             return View(produktVMList);
+        }
+
+        // GET: /shop/product-szczegoly/name
+        [ActionName("product-szczegoly")]
+        public ActionResult ProductDetails(string name)
+        {
+            // deklaracja productVM i productDTO
+            ProductVM model;
+            ProductDTO dto;
+
+            // Inicjalizacja product id
+            int id = 0;
+
+            using (Db db = new Db())
+            {
+                // sprawdzamy czy produkt istnieje
+                if (!db.Products.Any(x => x.Slug.Equals(name)))
+                {
+                    return RedirectToAction("Index", "Shop");
+                }
+
+                // inicjalizacja productDTO
+                dto = db.Products.Where(x => x.Slug == name).FirstOrDefault();
+
+                // pobranie id
+                id = dto.Id;
+
+                // inicjalizacja modelu
+                model = new ProductVM(dto);
+            }
+
+            // pobieramy galerie zdjec dla wybranego produktu
+            model.GalleryImages = Directory.EnumerateFiles(Server.MapPath("~/Images/uploads/Products/" + id + "/Gallery/Thumbs"))
+                                            .Select(fn => Path.GetFileName(fn));
+
+            // zwracamy widok z modelem
+            return View("ProductDetails", model);
         }
 
     }
