@@ -36,3 +36,8 @@ span.ajaxmsg {
     position:absolute;
 }
 
+.ajaxcart{
+    position :relative;
+    top: 5px;
+}
+
