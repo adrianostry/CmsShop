@@ -13,7 +13,7 @@ namespace CmsShop.Controllers
             var cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
 
             // sprawdzanie czy koszyk jest pusty
-            if (cart.Count == 0 || Session["cart"] == nell)
+            if (cart.Count == 0 || Session["cart"] == null)
             {
                 ViewBag.Message = "Twój koszyk jest pusty";
                 return View();
