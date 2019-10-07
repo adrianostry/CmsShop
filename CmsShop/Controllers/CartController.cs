@@ -1,5 +1,7 @@
-﻿using CmsShop.Models.ViewModels.Cart;
+﻿using CmsShop.Models.Data;
+using CmsShop.Models.ViewModels.Cart;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace CmsShop.Controllers
@@ -60,6 +62,63 @@ namespace CmsShop.Controllers
                 qty = 0;
                 price = 0m;
             }
+
+            return PartialView(model);
+        }
+
+        public ActionResult AddToCartPartial(int id)
+        {
+            // inicjalizacja CartVM List
+            List<CartVM> cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
+
+            // inicjalizacja cartVM
+            CartVM model = new CartVM();
+
+            using (Db db = new Db())
+            {
+                // pobieramy produkt 
+                ProductDTO product = db.Products.Find(id);
+
+                // sprawdzenie czy produkt jest w koszyku
+                var productInCart = cart.FirstOrDefault(x => x.ProductId == id);
+
+                // zaleznosc od tego czy produkt jest w koszyku - zwiększamy ilość 
+                if (productInCart == null)
+                {
+                    cart.Add(new CartVM()
+                    {
+                        ProductId = product.Id,
+                        ProductName = product.Name,
+                        Quantity = 1,
+                        Price = product.Price,
+                        Image = product.ImageName
+                    });
+                }
+                else
+                {
+                    productInCart.Quantity++;
+                }
+
+            }
+
+            // pobieramy calkowita wortosc ilosci i ceny - dodajemy do modelu
+            int qty = 0;
+            decimal price = 0m;
+
+            foreach (var item in cart)
+            {
+                qty += item.Quantity;
+                price += item.Quantity * item.Price;
+            }
+
+            model.Quantity = qty;
+            model.Price = price;
+
+            // zapis w sesii
+            Session["cart"] = cart;
+
+
+
 
             return PartialView(model);
         }
