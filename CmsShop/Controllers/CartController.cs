@@ -52,8 +52,11 @@ namespace CmsShop.Controllers
                 foreach (var item in list)
                 {
                     qty += item.Quantity;
-                    price += item.Quantity * item.ProductId;
+                    price += item.Quantity * item.Price;
                 }
+
+                model.Quantity = qty;
+                model.Price = price;
             }
 
             else
