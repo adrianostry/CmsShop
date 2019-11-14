@@ -77,21 +77,19 @@ else
 }
 
 @section scripts{
-
     <script>
 
 
-        
         $(function () {
 
+
             /*
-            * Zwiększenie liczby produktów w koszyku (czyli od 0 do 10 np.)
+            *  Zwiekszenie ilosci produktu w koszyku
             */
+            $("a.incrproduct").click(function (e) {
 
-            $("a.incrproduct").click(function () {
-
-                e.preventDefoult();
-                var productId = $(this).deta("id");
+                e.preventDefault();
+                var productId = $(this).data("id");
                 var url = "/cart/IncrementProduct";
 
                 $.getJSON(url, { productId: productId }, function (data) {
@@ -99,20 +97,68 @@ else
                     $("td.qty" + productId).html(data.qty);
 
                     var price = data.qty * data.price;
-                    var pricehtml = price.toFixed(2) + " zł."
+                    var priceHtml = price.toFixed(2) + " zł."
 
-                    $("td.total" + productId).html(pricehtml);
+                    $("td.total" + productId).html(priceHtml);
 
                     var gt = parseFloat($("td.grandtotal span").text());
                     var grandtotal = (gt + data.price).toFixed(2);
 
                     $("td.grandtotal span").text(grandtotal);
+                }).done(function (data) {
+                    var url2 = "/cart/PaypalPartial";
+
+                    $.get(url2, {}, function (data) {
+
+                        $('div.paypaldiv').html(data);
+                    });
                 });
             });
+            //////////////////////////////////////////////////////////////////
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            /*
+            *  Zmniejszanie ilosci produktu w koszyku
+            */
+            $("a.decrproduct").click(function (e) {
+
+                e.preventDefault();
+                var $this = $(this);
+                var productId = $(this).data("id");
+                var url = "/cart/DecrementProduct";
+
+                $.getJSON(url, { productId: productId }, function (data) {
+
+                    if (data.qty == 0) {
+                        $this.parent().parent().fadeOut("fast", function () {
+                            location.reload();
+                        })
+                    }
+                    else {
+                        $("td.qty" + productId).html(data.qty);
+
+                        var price = data.qty * data.price;
+                        var priceHtml = price.toFixed(2) + " zł."
+
+                        $("td.total" + productId).html(priceHtml);
+
+                        var gt = parseFloat($("td.grandtotal span").text());
+                        var grandtotal = (gt - data.price).toFixed(2);
+
+                        $("td.grandtotal span").text(grandtotal);
+                    }
+                }).done(function (data) {
+                    var url2 = "/cart/PaypalPartial";
+
+                    $.get(url2, {}, function (data) {
+
+                        $('div.paypaldiv').html(data);
+                    });
+                });
+            });
+            //////////////////////////////////////////////////////////////////
 
         });
     </script>
-
 }
