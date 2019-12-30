@@ -10,30 +10,30 @@ namespace CmsShop.Models.ViewModels.Account
 
         }
 
-        public UserVM(UserDTO row )
+        public UserVM(UserDTO row)
         {
             Id = row.Id;
-            FirsName = row.FirsName;
+            FirstName = row.FirstName;
             LastName = row.LastName;
-            EmailAddres = row.EmailAddres;
+            EmailAddress = row.EmailAddress;
             UserName = row.UserName;
             Password = row.Password;
-
         }
 
         public int Id { get; set; }
         [Required]
-        public string FirsName { get; set; }
+        public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
-        public string EmailAddres { get; set; }
+        public string EmailAddress { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
+
     }
 }
