@@ -141,5 +141,29 @@ namespace CmsShop.Controllers
 
             return Redirect("~/account/login");
         }
+
+
+        public ActionResult UserNavPartial()
+        {
+            // pobieramy username
+            string username = User.Identity.Name;
+
+            // deklaracja model
+            UserNavPartialVM model;
+
+            using (Db db = new Db())
+            {
+                // pobieramy użytkownika 
+                UserDTO dto = db.Users.FirstOrDefault(x => x.UserName == username);
+
+                model = new UserNavPartialVM()
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName
+                };
+            }
+
+                return PartialView(model);
+        }
     }
 }
