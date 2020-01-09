@@ -939,6 +939,7 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\UserNavPartial.cshtml" />
     <Content Include="Views\Account\UserProfile.cshtml" />
+    <Content Include="Views\Cart\PayPalPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />

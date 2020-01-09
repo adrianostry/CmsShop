@@ -181,5 +181,12 @@ namespace CmsShop.Controllers
 
         }
 
+        public ActionResult PayPalPartial()
+        {
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            return PartialView(cart);
+        }
+
     }
 }
