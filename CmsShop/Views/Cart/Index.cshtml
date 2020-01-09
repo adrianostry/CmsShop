@@ -207,7 +207,30 @@ else
 
                 });
             });
+            //////////////////////////////////////////////////////////////////
 
+            /*
+            *  Składanie zamowienia
+            */
+            $("a.placeorder").click(function (e) {
+
+                e.preventDefault();
+                var $this = $(this);
+
+                var url = "/cart/PlaceOrder";
+
+                $(".ajaxbg").show();
+
+                $.post(url, {  }, function (data) {
+
+                    $(".ajaxbg span").text("Dziękuję. Zostaniesz przekierowany do PayPal.");
+                    setTimeout(function () {
+                        $('from input[name=""submit"]').click();
+                    }, 2000);
+
+                });
+            });
+            //////////////////////////////////////////////////////////////////
         });
     </script>
 }

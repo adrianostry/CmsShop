@@ -1,7 +1,10 @@
 ﻿using CmsShop.Models.Data;
 using CmsShop.Models.ViewModels.Cart;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web.Mvc;
 
 namespace CmsShop.Controllers
@@ -186,6 +189,64 @@ namespace CmsShop.Controllers
             List<CartVM> cart = Session["cart"] as List<CartVM>;
 
             return PartialView(cart);
+        }
+
+        [HttpPost]
+        public void PlaceOrder()
+        {
+            // pobieranie z koszyka sesi zawartosci 
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            // pobieranie uzytkownika
+            string username = User.Identity.Name;
+
+            // deklarujemy numer zamowienia 
+            int orderId = 0;
+
+            using (Db db = new Db())
+            {
+                // inicjalizacja OrderDTO
+                OrderDTO orderDTO = new OrderDTO();
+
+                // pobieranie user id
+                var user = db.Users.FirstOrDefault(x => x.UserName == username);
+                int userId = user.Id;
+
+                // ustawienie orderDTO i zapis
+                orderDTO.UserId = userId;
+                orderDTO.CreatedAt = DateTime.Now;
+
+                db.Orders.Add(orderDTO);
+                db.SaveChanges();
+
+                // pobieramy id zapisaneo zamowienia 
+                orderId = orderDTO.OrderId;
+
+                // inicjalizacja OrderDetailsDTO
+                OrderDetailsDTO orderDetailsDTO = new OrderDetailsDTO();
+
+                foreach (var item in cart)
+                {
+                    orderDetailsDTO.OrderId = orderId;
+                    orderDetailsDTO.UserId = userId;
+                    orderDetailsDTO.ProductId = item.ProductId;
+                    orderDetailsDTO.Quantity = item.Quantity;
+
+                    db.OrderDetails.Add(orderDetailsDTO);
+                    db.SaveChanges();
+                }
+            }
+
+            // wysylanie emaila do admina strony
+            var client = new SmtpClient("smtp.mailtrap.io", 2525)
+            {
+                Credentials = new NetworkCredential("f753052357f662", "ec8bc39b24d1c7"),
+                EnableSsl = true
+            };
+            client.Send("admin@example.com", "admin@example.com", "Nowe zamowienie", "Masz nowe zamowienie. Numer zamowienia " + orderId);
+
+            // reset session
+            Session["cart"] = null;
         }
 
     }
