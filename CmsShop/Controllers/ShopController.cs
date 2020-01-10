@@ -1,4 +1,5 @@
-﻿using CmsShop.Models.Data;
+﻿using CmsShop.Areas.Admin.Models.ViewModels.Shop;
+using CmsShop.Models.Data;
 using CmsShop.Models.ViewModels.Shop;
 using System;
 using System.Collections.Generic;
@@ -103,6 +104,66 @@ namespace CmsShop.Controllers
 
             // zwracamy widok z modelem
             return View("ProductDetails", model);
+        }
+
+
+        // GET: Admin/Shop/Orders
+        public ActionResult Orders()
+        {
+            // inicjalizacja OrderForAdminVM
+            List<OrdersForAdminVM> ordersForAdminVM = new List<OrdersForAdminVM>();
+
+            using (Db db = new Db())
+            {
+                // pobieramy zamowienia
+                List<OrderVM> orders = db.Orders.ToArray().Select(x => new OrderVM(x)).ToList();
+
+                foreach (var order in orders)
+                {
+                    // inicjalizacja slownika produktow
+                    Dictionary<string, int> productsAndQty = new Dictionary<string, int>();
+
+                    decimal total = 0m;
+
+                    // inicjalizacja oredersDetailsDTO
+                    List<OrderDetailsDTO> orderDetailsList = db.OrderDetails.Where(x => x.OrderId == order.OrderId).ToList();
+
+                    // pobieramy uzytkownika 
+                    UserDTO user = db.Users.Where(x => x.Id == order.UserId).FirstOrDefault();
+                    string username = user.UserName;
+
+                    foreach( var orderDetails in orderDetailsList)
+                    {
+                        // pobieramy produkt
+                        ProductDTO product = db.Products.Where(x => x.Id == orderDetails.ProductId).FirstOrDefault();
+
+                        // pobieramy cene produktu
+                        decimal price = product.Price;
+
+                        // pobieramy nazwe produktu
+                        string productName = product.Name;
+
+                        // dodac produkt do slownika
+                        productsAndQty.Add(productName, orderDetails.Quantity);
+
+                        // ustawiamy wartosc
+                        total += orderDetails.Quantity * price;
+
+                    }
+
+                    ordersForAdminVM.Add(new OrdersForAdminVM()
+                    {
+                        OrderNumber = order.OrderId,
+                        Username = username,
+                        Total = total,
+                        ProductsAndQty = productsAndQty,
+                        CreatedAt = order.CreatedAt
+                    });
+
+                }
+            }
+
+                return View(ordersForAdminVM);
         }
 
     }
