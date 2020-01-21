@@ -239,6 +239,7 @@
     <Content Include="admin-lte\js\demo.js" />
     <Content Include="admin-lte\js\pages\dashboard.js" />
     <Content Include="admin-lte\js\pages\dashboard2.js" />
+    <Content Include="admin-lte\plugins\fastclick.js" />
     <Content Include="App_Data\CmsShop.mdf" />
     <Content Include="App_Data\CmsShop_log.ldf">
       <DependentUpon>CmsShop.mdf</DependentUpon>
@@ -996,6 +997,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <None Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1008,7 +1010,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_LayoutOld.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
