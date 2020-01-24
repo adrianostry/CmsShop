@@ -151,12 +151,12 @@ namespace CmsShop.Controllers
             // pobieramy username
             string username = User.Identity.Name;
 
-            // deklaracja model
+            // deklarujemy model
             UserNavPartialVM model;
 
             using (Db db = new Db())
             {
-                // pobieramy użytkownika 
+                // pobieramy uzytkownika
                 UserDTO dto = db.Users.FirstOrDefault(x => x.UserName == username);
 
                 model = new UserNavPartialVM()
@@ -166,6 +166,59 @@ namespace CmsShop.Controllers
                 };
             }
 
+            return PartialView(model);
+        }
+
+        [Authorize]
+        public ActionResult UserNavPartial2()
+        {
+            // Get username
+            string username = User.Identity.Name;
+
+            // Declare model
+            UserNavPartialVM model;
+
+            using (Db db = new Db())
+            {
+                // Get the user
+                UserDTO dto = db.Users.FirstOrDefault(x => x.UserName == username);
+
+                // Build the model
+                model = new UserNavPartialVM()
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName
+                };
+            }
+
+            // Return partial view with model
+            return PartialView(model);
+        }
+
+        [Authorize]
+        public ActionResult UserNavPartial3()
+        {
+            // Get username
+            string username = User.Identity.Name;
+            string email = string.Empty;
+
+            // Declare model
+            UserNavPartialVM3 model;
+
+            using (Db db = new Db())
+            {
+                // Get the user
+                UserDTO dto = db.Users.FirstOrDefault(x => x.UserName == username);
+
+                // Build the model
+                // Build the model
+                model = new UserNavPartialVM3()
+                {
+                    Email = dto.EmailAddress
+                };
+            }
+
+            // Return partial view with model
             return PartialView(model);
         }
 
